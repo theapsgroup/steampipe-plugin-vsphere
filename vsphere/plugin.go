@@ -16,7 +16,8 @@ func Plugin(ctx context.Context) *plugin.Plugin {
 		},
 		DefaultTransform: transform.FromGo().NullIfZero(),
 		TableMap: map[string]*plugin.Table{
-			"vsphere_vm": tableVm(),
+			"vsphere_vm":   tableVm(),
+			"vsphere_host": tableHost(),
 		},
 	}
 	return p
