@@ -11,7 +11,6 @@ import (
 )
 
 type Host struct {
-	ID           string
 	Name         string
 	Manufacturer string
 	Model        string
@@ -36,21 +35,20 @@ func tableHost() *plugin.Table {
 			Hydrate: listHosts,
 		},
 		Columns: []*plugin.Column{
-			{Name: "id", Type: proto.ColumnType_STRING, Description: "The guest id"},
-			{Name: "name", Type: proto.ColumnType_STRING, Description: "The name of the guest"},
-			{Name: "manufacturer", Type: proto.ColumnType_STRING, Description: "The name of the guest"},
-			{Name: "model", Type: proto.ColumnType_STRING, Description: "The name of the guest"},
-			{Name: "cpu", Type: proto.ColumnType_STRING, Description: "The name of the guest"},
-			{Name: "cpu_cores", Type: proto.ColumnType_INT, Description: "The name of the guest"},
-			{Name: "cpu_threads", Type: proto.ColumnType_INT, Description: "The name of the guest"},
-			{Name: "cpu_mhz", Type: proto.ColumnType_INT, Description: "The name of the guest"},
-			{Name: "num_nics", Type: proto.ColumnType_INT, Description: "The name of the guest"},
-			{Name: "num_hbas", Type: proto.ColumnType_INT, Description: "The name of the guest"},
-			{Name: "memory", Type: proto.ColumnType_INT, Description: "The name of the guest"},
-			{Name: "status", Type: proto.ColumnType_STRING, Description: "The name of the guest"},
-			{Name: "cpu_usage", Type: proto.ColumnType_INT, Description: "The name of the guest"},
-			{Name: "memory_usage", Type: proto.ColumnType_INT, Description: "The name of the guest"},
-			{Name: "uptime", Type: proto.ColumnType_INT, Description: "The name of the guest"},
+			{Name: "name", Type: proto.ColumnType_STRING, Description: "The host's name"},
+			{Name: "manufacturer", Type: proto.ColumnType_STRING, Description: "The manufacturer of the hardware"},
+			{Name: "model", Type: proto.ColumnType_STRING, Description: "The model of the hardware"},
+			{Name: "cpu", Type: proto.ColumnType_STRING, Description: "CPU model"},
+			{Name: "cpu_cores", Type: proto.ColumnType_INT, Description: "CPU core count"},
+			{Name: "cpu_threads", Type: proto.ColumnType_INT, Description: "CPU thread count"},
+			{Name: "cpu_mhz", Type: proto.ColumnType_INT, Description: "CPU clock rate in mhz"},
+			{Name: "num_nics", Type: proto.ColumnType_INT, Description: "The number of NICs connected"},
+			{Name: "num_hbas", Type: proto.ColumnType_INT, Description: "The number of HBAs connected"},
+			{Name: "memory", Type: proto.ColumnType_INT, Description: "Memory in bytes"},
+			{Name: "status", Type: proto.ColumnType_STRING, Description: "The status of the host"},
+			{Name: "cpu_usage", Type: proto.ColumnType_INT, Description: "Current cpu usage in mhz"},
+			{Name: "memory_usage", Type: proto.ColumnType_INT, Description: "Curent memory usage in MB"},
+			{Name: "uptime", Type: proto.ColumnType_INT, Description: "Uptime"},
 		},
 	}
 }
@@ -61,7 +59,7 @@ func listHosts(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) 
 	manager := view.NewManager(client)
 
 	var hosts []mo.HostSystem
-	//https://code.vmware.com/apis/704/vsphere/vmodl.query.PropertyCollector.PropertySpec.html
+
 	//https://code.vmware.com/apis/704/vsphere/vim.HostSystem.html
 	hostView, err := manager.CreateContainerView(ctx, client.ServiceContent.RootFolder, []string{"HostSystem"}, true)
 	if err != nil {
@@ -73,9 +71,7 @@ func listHosts(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) 
 	}
 
 	for _, h := range hosts {
-		//logger.Warn(h.Summary.Hardware.
 		d.StreamListItem(ctx, Host{
-			ID:           h.Summary.Config.Name,
 			Name:         h.Summary.Config.Name,
 			Manufacturer: h.Summary.Hardware.Vendor,
 			Model:        h.Summary.Hardware.Model,
