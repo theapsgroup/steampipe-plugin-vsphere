@@ -28,11 +28,11 @@ func tableDatastore() *plugin.Table {
 		},
 		Columns: []*plugin.Column{
 			{Name: "name", Type: proto.ColumnType_STRING, Description: "The name of the datastore"},
-			{Name: "capacity", Type: proto.ColumnType_INT, Description: "Capacity in bytes"},
-			{Name: "uncommitted", Type: proto.ColumnType_INT, Description: "How much storage on this datastore has been allocated to guests in bytes"},
-			{Name: "free", Type: proto.ColumnType_INT, Description: "Free space left in bytes"},
-			{Name: "accessible", Type: proto.ColumnType_BOOL, Description: "Whether this datastore is accessible"},
-			{Name: "type", Type: proto.ColumnType_STRING, Description: "The type of datastore"},
+			{Name: "capacity", Type: proto.ColumnType_INT, Description: "Maximum capacity of this datastore in bytes"},
+			{Name: "uncommitted", Type: proto.ColumnType_INT, Description: "Total additional storage space, in bytes, potentially used by all virtual machines on this datastore"},
+			{Name: "free", Type: proto.ColumnType_INT, Description: "Available space of this datastore, in bytes"},
+			{Name: "accessible", Type: proto.ColumnType_BOOL, Description: "The connectivity status of this datastore"},
+			{Name: "type", Type: proto.ColumnType_STRING, Description: "Type of file system volume, such as VMFS or NFS"},
 		},
 	}
 }

@@ -27,10 +27,10 @@ func tableNetwork() *plugin.Table {
 		},
 		Columns: []*plugin.Column{
 			{Name: "name", Type: proto.ColumnType_STRING, Description: "The name of the network"},
-			{Name: "type", Type: proto.ColumnType_STRING, Description: "The network type"},
-			{Name: "ip_pool_name", Type: proto.ColumnType_STRING, Description: "Name of an associated ip pool, if associated"},
-			{Name: "ip_pool_id", Type: proto.ColumnType_INT, Description: "ID of an associated ip pool, if associated"},
-			{Name: "accessible", Type: proto.ColumnType_BOOL, Description: "Whether any host provides this network"},
+			{Name: "type", Type: proto.ColumnType_STRING, Description: "The type of the netowrk"},
+			{Name: "ip_pool_name", Type: proto.ColumnType_STRING, Description: "Name of the associated IP pool. Empty if the network is not associated with an IP pool"},
+			{Name: "ip_pool_id", Type: proto.ColumnType_INT, Description: "Identifier of the associated IP pool. Zero if the network is not associated with an IP pool"},
+			{Name: "accessible", Type: proto.ColumnType_BOOL, Description: "At least one host is configured to provide this network"},
 		},
 	}
 }

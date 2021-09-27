@@ -11,20 +11,20 @@ import (
 )
 
 type Host struct {
-	Name         string
-	Manufacturer string
-	Model        string
-	CPU          string
-	CPUCores     int16
-	CPUThreads   int16
-	CPUMhz       int32
-	NumNics      int32
-	NumHbas      int32
-	Memory       int64
-	Status       string
-	CPUUsage     int32
-	MemoryUsage  int32
-	Uptime       int32
+	Name        string
+	Vendor      string
+	Model       string
+	CPU         string
+	CPUCores    int16
+	CPUThreads  int16
+	CPUMhz      int32
+	NumNics     int32
+	NumHbas     int32
+	Memory      int64
+	Status      string
+	CPUUsage    int32
+	MemoryUsage int32
+	Uptime      int32
 }
 
 func tableHost() *plugin.Table {
@@ -35,20 +35,20 @@ func tableHost() *plugin.Table {
 			Hydrate: listHosts,
 		},
 		Columns: []*plugin.Column{
-			{Name: "name", Type: proto.ColumnType_STRING, Description: "The host's name"},
-			{Name: "manufacturer", Type: proto.ColumnType_STRING, Description: "The manufacturer of the hardware"},
-			{Name: "model", Type: proto.ColumnType_STRING, Description: "The model of the hardware"},
-			{Name: "cpu", Type: proto.ColumnType_STRING, Description: "CPU model"},
-			{Name: "cpu_cores", Type: proto.ColumnType_INT, Description: "CPU core count"},
-			{Name: "cpu_threads", Type: proto.ColumnType_INT, Description: "CPU thread count"},
-			{Name: "cpu_mhz", Type: proto.ColumnType_INT, Description: "CPU clock rate in mhz"},
-			{Name: "num_nics", Type: proto.ColumnType_INT, Description: "The number of NICs connected"},
-			{Name: "num_hbas", Type: proto.ColumnType_INT, Description: "The number of HBAs connected"},
-			{Name: "memory", Type: proto.ColumnType_INT, Description: "Memory in bytes"},
+			{Name: "name", Type: proto.ColumnType_STRING, Description: "The name of the host"},
+			{Name: "vendor", Type: proto.ColumnType_STRING, Description: "The hardware vendor identification"},
+			{Name: "model", Type: proto.ColumnType_STRING, Description: "The system model identification"},
+			{Name: "cpu", Type: proto.ColumnType_STRING, Description: "The CPU model"},
+			{Name: "cpu_cores", Type: proto.ColumnType_INT, Description: "Number of physical CPU cores on the host"},
+			{Name: "cpu_threads", Type: proto.ColumnType_INT, Description: "Number of physical CPU threads on the host"},
+			{Name: "cpu_mhz", Type: proto.ColumnType_INT, Description: "The speed of the CPU cores. This is an average value if there are multiple speeds"},
+			{Name: "num_nics", Type: proto.ColumnType_INT, Description: "The number of network adapters"},
+			{Name: "num_hbas", Type: proto.ColumnType_INT, Description: "The number of host bus adapters"},
+			{Name: "memory", Type: proto.ColumnType_INT, Description: "The physical memory size in bytes"},
 			{Name: "status", Type: proto.ColumnType_STRING, Description: "The status of the host"},
 			{Name: "cpu_usage", Type: proto.ColumnType_INT, Description: "Current cpu usage in mhz"},
 			{Name: "memory_usage", Type: proto.ColumnType_INT, Description: "Current memory usage in MB"},
-			{Name: "uptime", Type: proto.ColumnType_INT, Description: "Uptime"},
+			{Name: "uptime", Type: proto.ColumnType_INT, Description: "The uptime in seconds"},
 		},
 	}
 }
@@ -71,20 +71,20 @@ func listHosts(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) 
 
 	for _, h := range hosts {
 		d.StreamListItem(ctx, Host{
-			Name:         h.Summary.Config.Name,
-			Manufacturer: h.Summary.Hardware.Vendor,
-			Model:        h.Summary.Hardware.Model,
-			CPU:          h.Summary.Hardware.CpuModel,
-			CPUCores:     h.Summary.Hardware.NumCpuCores,
-			CPUThreads:   h.Summary.Hardware.NumCpuThreads,
-			CPUMhz:       h.Summary.Hardware.CpuMhz,
-			NumNics:      h.Summary.Hardware.NumNics,
-			NumHbas:      h.Summary.Hardware.NumHBAs,
-			Memory:       h.Summary.Hardware.MemorySize,
-			Status:       string(h.Summary.OverallStatus),
-			CPUUsage:     h.Summary.QuickStats.OverallCpuUsage,
-			MemoryUsage:  h.Summary.QuickStats.OverallMemoryUsage,
-			Uptime:       h.Summary.QuickStats.Uptime,
+			Name:        h.Summary.Config.Name,
+			Vendor:      h.Summary.Hardware.Vendor,
+			Model:       h.Summary.Hardware.Model,
+			CPU:         h.Summary.Hardware.CpuModel,
+			CPUCores:    h.Summary.Hardware.NumCpuCores,
+			CPUThreads:  h.Summary.Hardware.NumCpuThreads,
+			CPUMhz:      h.Summary.Hardware.CpuMhz,
+			NumNics:     h.Summary.Hardware.NumNics,
+			NumHbas:     h.Summary.Hardware.NumHBAs,
+			Memory:      h.Summary.Hardware.MemorySize,
+			Status:      string(h.Summary.OverallStatus),
+			CPUUsage:    h.Summary.QuickStats.OverallCpuUsage,
+			MemoryUsage: h.Summary.QuickStats.OverallMemoryUsage,
+			Uptime:      h.Summary.QuickStats.Uptime,
 		})
 	}
 	return nil, nil
