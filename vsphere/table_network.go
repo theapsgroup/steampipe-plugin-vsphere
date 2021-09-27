@@ -36,7 +36,6 @@ func tableNetwork() *plugin.Table {
 }
 
 func listNetworks(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
-	logger := plugin.Logger(ctx)
 	client, _ := connect(ctx, d)
 	manager := view.NewManager(client)
 
@@ -44,11 +43,11 @@ func listNetworks(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateDat
 	//https://code.vmware.com/apis/704/vsphere/vim.Network.html
 	networkView, err := manager.CreateContainerView(ctx, client.ServiceContent.RootFolder, []string{"Network"}, true)
 	if err != nil {
-		logger.Error(fmt.Sprintf("%v", err))
+		return nil, fmt.Errorf(fmt.Sprintf("Error creating network view: %v", err))
 	}
 	err = networkView.Retrieve(ctx, []string{"Network"}, []string{"summary"}, &networks)
 	if err != nil {
-		logger.Error(fmt.Sprintf("%v", err))
+		return nil, fmt.Errorf(fmt.Sprintf("Error listing network summary: %v", err))
 	}
 
 	for _, n := range networks {

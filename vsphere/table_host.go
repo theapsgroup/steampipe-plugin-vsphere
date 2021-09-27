@@ -47,14 +47,13 @@ func tableHost() *plugin.Table {
 			{Name: "memory", Type: proto.ColumnType_INT, Description: "Memory in bytes"},
 			{Name: "status", Type: proto.ColumnType_STRING, Description: "The status of the host"},
 			{Name: "cpu_usage", Type: proto.ColumnType_INT, Description: "Current cpu usage in mhz"},
-			{Name: "memory_usage", Type: proto.ColumnType_INT, Description: "Curent memory usage in MB"},
+			{Name: "memory_usage", Type: proto.ColumnType_INT, Description: "Current memory usage in MB"},
 			{Name: "uptime", Type: proto.ColumnType_INT, Description: "Uptime"},
 		},
 	}
 }
 
 func listHosts(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
-	logger := plugin.Logger(ctx)
 	client, _ := connect(ctx, d)
 	manager := view.NewManager(client)
 
@@ -63,11 +62,11 @@ func listHosts(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) 
 	//https://code.vmware.com/apis/704/vsphere/vim.HostSystem.html
 	hostView, err := manager.CreateContainerView(ctx, client.ServiceContent.RootFolder, []string{"HostSystem"}, true)
 	if err != nil {
-		logger.Error(fmt.Sprintf("%v", err))
+		return nil, fmt.Errorf(fmt.Sprintf("Error creating host container view: %v", err))
 	}
 	err = hostView.Retrieve(ctx, []string{"HostSystem"}, []string{"summary"}, &hosts)
 	if err != nil {
-		logger.Error(fmt.Sprintf("%v", err))
+		return nil, fmt.Errorf(fmt.Sprintf("Error listing host summary view: %v", err))
 	}
 
 	for _, h := range hosts {

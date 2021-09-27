@@ -46,7 +46,6 @@ func tableVm() *plugin.Table {
 }
 
 func listVms(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
-	logger := plugin.Logger(ctx)
 	client, _ := connect(ctx, d)
 	manager := view.NewManager(client)
 
@@ -54,20 +53,13 @@ func listVms(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (i
 	//https://code.vmware.com/apis/704/vsphere/vim.VirtualMachine.html
 	vmView, err := manager.CreateContainerView(ctx, client.ServiceContent.RootFolder, []string{"VirtualMachine"}, true)
 	if err != nil {
-		logger.Error(fmt.Sprintf("%v", err))
+		return nil, fmt.Errorf(fmt.Sprintf("Error creating vm view: %v", err))
 	}
 	err = vmView.Retrieve(ctx, []string{"VirtualMachine"}, []string{"summary"}, &vms)
 	if err != nil {
-		logger.Error(fmt.Sprintf("%v", err))
+		return nil, fmt.Errorf(fmt.Sprintf("Error listing vm summary: %v", err))
 	}
-
-	if err != nil {
-		logger.Error(fmt.Sprintf("%v", err))
-	}
-
 	for _, vm := range vms {
-		logger.Warn(vm.Summary.Config.InstanceUuid)
-
 		d.StreamListItem(ctx, VM{
 			ID:               vm.Summary.Config.GuestId,
 			Name:             vm.Summary.Config.Name,
