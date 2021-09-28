@@ -10,7 +10,7 @@ import (
 	"github.com/vmware/govmomi/vim25/mo"
 )
 
-type DataStore struct {
+type Datastore struct {
 	Name        string
 	Capacity    int64
 	Free        int64
@@ -28,32 +28,31 @@ func tableDatastore() *plugin.Table {
 		},
 		Columns: []*plugin.Column{
 			{Name: "name", Type: proto.ColumnType_STRING, Description: "The name of the datastore"},
-			{Name: "capacity", Type: proto.ColumnType_INT, Description: "Capacity in bytes"},
-			{Name: "uncommitted", Type: proto.ColumnType_INT, Description: "How much storage on this datastore has been allocated to guests in bytes"},
-			{Name: "free", Type: proto.ColumnType_INT, Description: "Free space left in bytes"},
-			{Name: "accessible", Type: proto.ColumnType_BOOL, Description: "Whether this datastore is accessible"},
-			{Name: "type", Type: proto.ColumnType_STRING, Description: "The type of Datastore"},
+			{Name: "capacity", Type: proto.ColumnType_INT, Description: "Maximum capacity of this datastore in bytes"},
+			{Name: "uncommitted", Type: proto.ColumnType_INT, Description: "Total additional storage space, in bytes, potentially used by all virtual machines on this datastore"},
+			{Name: "free", Type: proto.ColumnType_INT, Description: "Available space of this datastore, in bytes"},
+			{Name: "accessible", Type: proto.ColumnType_BOOL, Description: "The connectivity status of this datastore"},
+			{Name: "type", Type: proto.ColumnType_STRING, Description: "Type of file system volume, such as VMFS or NFS"},
 		},
 	}
 }
 
 func listDatastores(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
-	logger := plugin.Logger(ctx)
 	client, _ := connect(ctx, d)
 	manager := view.NewManager(client)
 
 	var dss []mo.Datastore
 	datastoreView, err := manager.CreateContainerView(ctx, client.ServiceContent.RootFolder, []string{"Datastore"}, true)
 	if err != nil {
-		logger.Error(fmt.Sprintf("%v", err))
+		return nil, fmt.Errorf(fmt.Sprintf("Error creating datastore container view: %v", err))
 	}
 	err = datastoreView.Retrieve(ctx, []string{"Datastore"}, []string{"summary"}, &dss)
 	if err != nil {
-		logger.Error(fmt.Sprintf("%v", err))
+		return nil, fmt.Errorf(fmt.Sprintf("Error listing datastore summary: %v", err))
 	}
 
 	for _, ds := range dss {
-		d.StreamListItem(ctx, DataStore{
+		d.StreamListItem(ctx, Datastore{
 			Name:        ds.Summary.Name,
 			Capacity:    ds.Summary.Capacity,
 			Uncommitted: ds.Summary.Uncommitted,

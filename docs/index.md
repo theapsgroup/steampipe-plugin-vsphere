@@ -1,13 +1,13 @@
 ---
 organization: The APS Group
 category: ["virtualization"]
-icon_url: "/images/plugins/theapsgroup/tbd.svg"
-brand_color: "#003A75"
+icon_url: "images/plugins/theapsgroup/vsphere.svg"
+brand_color: "#696566"
 display_name: "VMware vSphere"
 short_name: "vsphere"
 description: "Steampipe plugin for querying data from a vsphere environment."
 og_description: Query VMware vSphere with SQL! Open source CLI. No DB required.
-og_image: "/images/plugins/theapsgroup/tbd.png"
+og_image: "images/plugins/theapsgroup/vsphere-social-graphic.png"
 ---
 
 # VMware vSphere + Turbot Steampipe

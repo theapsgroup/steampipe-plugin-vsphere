@@ -27,16 +27,15 @@ func tableNetwork() *plugin.Table {
 		},
 		Columns: []*plugin.Column{
 			{Name: "name", Type: proto.ColumnType_STRING, Description: "The name of the network"},
-			{Name: "type", Type: proto.ColumnType_STRING, Description: "The network type"},
-			{Name: "ip_pool_name", Type: proto.ColumnType_STRING, Description: "Name of an associated ip pool, if associated"},
-			{Name: "ip_pool_id", Type: proto.ColumnType_INT, Description: "ID of an associated ip pool, if associated"},
-			{Name: "accessible", Type: proto.ColumnType_BOOL, Description: "Whether any host provides this network"},
+			{Name: "type", Type: proto.ColumnType_STRING, Description: "The type of the netowrk"},
+			{Name: "ip_pool_name", Type: proto.ColumnType_STRING, Description: "Name of the associated IP pool. Empty if the network is not associated with an IP pool"},
+			{Name: "ip_pool_id", Type: proto.ColumnType_INT, Description: "Identifier of the associated IP pool. Zero if the network is not associated with an IP pool"},
+			{Name: "accessible", Type: proto.ColumnType_BOOL, Description: "At least one host is configured to provide this network"},
 		},
 	}
 }
 
 func listNetworks(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
-	logger := plugin.Logger(ctx)
 	client, _ := connect(ctx, d)
 	manager := view.NewManager(client)
 
@@ -44,11 +43,11 @@ func listNetworks(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateDat
 	//https://code.vmware.com/apis/704/vsphere/vim.Network.html
 	networkView, err := manager.CreateContainerView(ctx, client.ServiceContent.RootFolder, []string{"Network"}, true)
 	if err != nil {
-		logger.Error(fmt.Sprintf("%v", err))
+		return nil, fmt.Errorf(fmt.Sprintf("Error creating network view: %v", err))
 	}
 	err = networkView.Retrieve(ctx, []string{"Network"}, []string{"summary"}, &networks)
 	if err != nil {
-		logger.Error(fmt.Sprintf("%v", err))
+		return nil, fmt.Errorf(fmt.Sprintf("Error listing network summary: %v", err))
 	}
 
 	for _, n := range networks {

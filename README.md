@@ -22,7 +22,12 @@ Or if you prefer, you can clone this repository and build/install from source di
 go build -o steampipe-plugin-vsphere.plugin
 
 mv steampipe-plugin-vsphere.plugin ~/.steampipe/plugins/hub.steampipe.io/plugins/theapsgroup/vsphere@latest/steampipe-plugin-vsphere.plugin
+```
 
+Alternatively, you can `make install` which will perform the same steps as above.
+
+
+```shell
 cp config/vsphere.spc ~/.steampipe/config/vsphere.spc
 ```
 
@@ -31,7 +36,7 @@ Configuration is done via the configuration file:
 
 ## Documentation
 
-Further documentation can he [found here](https://github.com/theapsgroup/steampipe-plugin-vsphere/blob/main/docs/index.md)
+Further documentation can be [found here](https://github.com/theapsgroup/steampipe-plugin-vsphere/blob/main/docs/index.md)
 
 ## Credits
 

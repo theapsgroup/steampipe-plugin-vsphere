@@ -31,11 +31,11 @@ func tableVm() *plugin.Table {
 			Hydrate: listVms,
 		},
 		Columns: []*plugin.Column{
-			{Name: "id", Type: proto.ColumnType_STRING, Description: "The guest id"},
-			{Name: "name", Type: proto.ColumnType_STRING, Description: "The name of the guest"},
-			{Name: "memory", Type: proto.ColumnType_INT, Description: "The the amount of memory"},
-			{Name: "num_cpu", Type: proto.ColumnType_INT, Description: "The cpu core count"},
-			{Name: "ip_address", Type: proto.ColumnType_STRING, Description: "IP Address of the vm"},
+			{Name: "id", Type: proto.ColumnType_STRING, Description: "The guest operating system identifier (short name)"},
+			{Name: "name", Type: proto.ColumnType_STRING, Description: "The name of the virtual machine"},
+			{Name: "memory", Type: proto.ColumnType_INT, Description: "Memory size of the virtual machine in MB"},
+			{Name: "num_cpu", Type: proto.ColumnType_INT, Description: "Number of virutal processors in the virtual machine"},
+			{Name: "ip_address", Type: proto.ColumnType_STRING, Description: "Primary IP address assigned to the guest operating system, if known"},
 			{Name: "uptime", Type: proto.ColumnType_INT, Description: "The guest uptime in seconds"},
 			{Name: "status", Type: proto.ColumnType_STRING, Description: "The overall guest status"},
 			{Name: "cpu_usage", Type: proto.ColumnType_INT, Description: "VM cpu usage in mhz"},
@@ -46,7 +46,6 @@ func tableVm() *plugin.Table {
 }
 
 func listVms(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
-	logger := plugin.Logger(ctx)
 	client, _ := connect(ctx, d)
 	manager := view.NewManager(client)
 
@@ -54,20 +53,13 @@ func listVms(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (i
 	//https://code.vmware.com/apis/704/vsphere/vim.VirtualMachine.html
 	vmView, err := manager.CreateContainerView(ctx, client.ServiceContent.RootFolder, []string{"VirtualMachine"}, true)
 	if err != nil {
-		logger.Error(fmt.Sprintf("%v", err))
+		return nil, fmt.Errorf(fmt.Sprintf("Error creating vm view: %v", err))
 	}
 	err = vmView.Retrieve(ctx, []string{"VirtualMachine"}, []string{"summary"}, &vms)
 	if err != nil {
-		logger.Error(fmt.Sprintf("%v", err))
+		return nil, fmt.Errorf(fmt.Sprintf("Error listing vm summary: %v", err))
 	}
-
-	if err != nil {
-		logger.Error(fmt.Sprintf("%v", err))
-	}
-
 	for _, vm := range vms {
-		logger.Warn(vm.Summary.Config.InstanceUuid)
-
 		d.StreamListItem(ctx, VM{
 			ID:               vm.Summary.Config.GuestId,
 			Name:             vm.Summary.Config.Name,
