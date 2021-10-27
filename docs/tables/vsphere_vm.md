@@ -14,3 +14,24 @@ select
 from
   vsphere_vm;
 ```
+### Select all vms with more than 6 cores assigned
+
+```sql
+select
+  *
+from
+  vsphere_vm
+where
+  num_cpu > 6;
+```
+
+### Select all vms with a name containing test and and uptime of more than 1 hour
+
+```sql
+select
+  *
+from
+  vsphere_vm
+where
+  name ILIKE '%test%' and uptime > 3600;
+```

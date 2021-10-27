@@ -14,3 +14,25 @@ select
 from
   vsphere_host;
 ```
+
+### Select all hosts by a vendor
+
+```sql
+select
+  *
+from
+  vsphere_host
+where
+  vendor LIKE '%Dell%';
+```
+
+### Select all hosts with a 'red' status
+
+```sql
+select
+  *
+from
+  vsphere_host
+where
+  status = 'red';
+```
