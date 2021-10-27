@@ -54,7 +54,11 @@ func tableHost() *plugin.Table {
 }
 
 func listHosts(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
-	client, _ := connect(ctx, d)
+	client, err := connect(ctx, d)
+	if err != nil {
+		return nil, fmt.Errorf(fmt.Sprintf("Error connecting to vsphere: %v", err))
+	}
+
 	manager := view.NewManager(client)
 
 	var hosts []mo.HostSystem

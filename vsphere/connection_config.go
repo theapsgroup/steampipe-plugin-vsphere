@@ -6,10 +6,10 @@ import (
 )
 
 type VsphereConfig struct {
-	VsphereServer  *string `cty:"vsphere_server"`
+	VsphereServer      *string `cty:"vsphere_server"`
 	AllowUnverifiedSSL *bool   `cty:"allow_unverified_ssl"`
-	User *string `cty:"user"`
-	Password *string `cty:"password"`
+	User               *string `cty:"user"`
+	Password           *string `cty:"password"`
 }
 
 var ConfigSchema = map[string]*schema.Attribute{
