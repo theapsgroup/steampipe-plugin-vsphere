@@ -15,15 +15,15 @@ func connect(ctx context.Context, d *plugin.QueryData) (*vim25.Client, error) {
 	vsphereConfig := GetConfig(d.Connection)
 	client := new(vim25.Client)
 
-	parsedUrl, err := soap.ParseURL(*vsphereConfig.BaseUrl)
+	parsedUrl, err := soap.ParseURL(*vsphereConfig.VsphereServer)
 	if err != nil {
 		return nil, fmt.Errorf("Error parsing vsphere url: %v", err)
 	}
-	parsedUrl.User = url.UserPassword(*vsphereConfig.Username, *vsphereConfig.Password)
+	parsedUrl.User = url.UserPassword(*vsphereConfig.User, *vsphereConfig.Password)
 
 	session := &cache.Session{
 		URL:      parsedUrl,
-		Insecure: *vsphereConfig.Insecure,
+		Insecure: *vsphereConfig.AllowUnverifiedSSL,
 	}
 	err = session.Login(ctx, client, nil)
 	if err != nil {

@@ -39,9 +39,9 @@ Configuration File:
 connection "vsphere" {
   plugin = "theapsgroup/vsphere"
 
-  baseurl  = "192.168.122.233"
-  username  = "root"
+  vsphere_server  = "192.168.122.233"
+  user  = "root"
   password  = "s0Mep@ss"
-  insecure = true
+  allow_unverified_ssl = true
 }
 ```

@@ -6,20 +6,20 @@ import (
 )
 
 type VsphereConfig struct {
-	BaseUrl  *string `cty:"baseurl"`
-	Insecure *bool   `cty:"insecure"`
-	Username *string `cty:"username"`
+	VsphereServer  *string `cty:"vsphere_server"`
+	AllowUnverifiedSSL *bool   `cty:"allow_unverified_ssl"`
+	User *string `cty:"user"`
 	Password *string `cty:"password"`
 }
 
 var ConfigSchema = map[string]*schema.Attribute{
-	"baseurl": {
+	"vsphere_server": {
 		Type: schema.TypeString,
 	},
-	"insecure": {
+	"allow_unverified_ssl": {
 		Type: schema.TypeBool,
 	},
-	"username": {
+	"user": {
 		Type: schema.TypeString,
 	},
 	"password": {
