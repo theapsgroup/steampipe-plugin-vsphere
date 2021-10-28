@@ -14,3 +14,25 @@ select
 from
   vsphere_datastore;
 ```
+
+### Select inacessible datastores
+
+```sql
+select
+  *
+from
+  vsphere_datastore
+where
+  accessible = false;
+```
+
+### Select NFS type datastores
+
+```sql
+select
+  *
+from
+  vsphere_datastore
+where
+  type = 'NFS';
+```

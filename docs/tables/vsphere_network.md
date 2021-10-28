@@ -14,3 +14,25 @@ select
 from
   vsphere_network;
 ```
+
+### Select all accessible networks
+
+```sql
+select
+  *
+from
+  vsphere_network
+where
+  accessible = true;
+```
+
+### Select networks with test in their name
+
+```sql
+select
+  *
+from
+  vsphere_network
+where
+  name ILIKE '%test%';
+```

@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 	"net/url"
+	"os"
+	"strconv"
 
 	"github.com/turbot/steampipe-plugin-sdk/plugin"
 	"github.com/vmware/govmomi/session/cache"
@@ -11,19 +13,64 @@ import (
 	"github.com/vmware/govmomi/vim25/soap"
 )
 
+const DEFAULT_ALLOW_UNVERFIED_SSL = false
+
 func connect(ctx context.Context, d *plugin.QueryData) (*vim25.Client, error) {
 	vsphereConfig := GetConfig(d.Connection)
+
+	vsphereServer := os.Getenv("VSPHERE_SERVER")
+	user := os.Getenv("VSPHERE_USER")
+	password := os.Getenv("VSPHERE_PASSWORD")
+	allowUnverifiedSSL := DEFAULT_ALLOW_UNVERFIED_SSL
+
+	if vsphereConfig.AllowUnverifiedSSL != nil {
+		allowUnverifiedSSL = *vsphereConfig.AllowUnverifiedSSL
+	}
+
+	if os.Getenv("VSPHERE_ALLOW_UNVERIFIED_SSL") != "" {
+		parsed, err := strconv.ParseBool(os.Getenv("VSPHERE_ALLOW_UNVERIFIED_SSL"))
+		if err != nil {
+		}
+		allowUnverifiedSSL = parsed
+	}
+
+	if vsphereServer == "" && vsphereConfig.VsphereServer != nil {
+		vsphereServer = *vsphereConfig.VsphereServer
+	}
+
+	if user == "" && vsphereConfig.User != nil {
+		user = *vsphereConfig.User
+	}
+
+	if password == "" && vsphereConfig.Password != nil {
+		password = *vsphereConfig.Password
+	}
+
+	if user == "" || password == "" || vsphereServer == "" {
+		errorMsg := ""
+		if user == "" {
+			errorMsg += "Missing user from config or env 'VSPHERE_USER'\n"
+		}
+		if password == "" {
+			errorMsg += "Missing password from config or env 'VSPHERE_PASSWORD'\n"
+		}
+		if vsphereServer == "" {
+			errorMsg += "Missing vsphere_server from config or env 'VSPHERE_SERVER'\n"
+		}
+		return nil, fmt.Errorf(errorMsg)
+	}
+
 	client := new(vim25.Client)
 
-	parsedUrl, err := soap.ParseURL(*vsphereConfig.BaseUrl)
+	parsedUrl, err := soap.ParseURL(vsphereServer)
 	if err != nil {
 		return nil, fmt.Errorf("Error parsing vsphere url: %v", err)
 	}
-	parsedUrl.User = url.UserPassword(*vsphereConfig.Username, *vsphereConfig.Password)
+	parsedUrl.User = url.UserPassword(user, password)
 
 	session := &cache.Session{
 		URL:      parsedUrl,
-		Insecure: *vsphereConfig.Insecure,
+		Insecure: allowUnverifiedSSL,
 	}
 	err = session.Login(ctx, client, nil)
 	if err != nil {

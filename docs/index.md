@@ -33,15 +33,28 @@ steampipe plugin install theapsgroup/vsphere
 
 ### Configuration
 
+Configuration can be done using both a configuration file and environment variables.
+
+Note: Environment variables will take precedence of values set in the config file.
+
 Configuration File:
 
 ```hcl
 connection "vsphere" {
   plugin = "theapsgroup/vsphere"
 
-  baseurl  = "192.168.122.233"
-  username  = "root"
+  vsphere_server  = "192.168.122.233"
+  user  = "root"
   password  = "s0Mep@ss"
-  insecure = true
+  allow_unverified_ssl = true
 }
+```
+
+Environment variables:
+
+```
+export VSPHERE_SERVER=192.168.122.233
+export VSPHERE_USER=root
+export VSPHERE_PASSWORD='s0Mep@ss'
+export ALLOW_UNVERIFIED_SSL=true
 ```
