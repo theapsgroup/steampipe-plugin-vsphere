@@ -23,26 +23,28 @@ func connect(ctx context.Context, d *plugin.QueryData) (*vim25.Client, error) {
 	password := os.Getenv("VSPHERE_PASSWORD")
 	allowUnverifiedSSL := DEFAULT_ALLOW_UNVERFIED_SSL
 
-	if vsphereConfig.AllowUnverifiedSSL != nil {
-		allowUnverifiedSSL = *vsphereConfig.AllowUnverifiedSSL
-	}
-
-	if os.Getenv("VSPHERE_ALLOW_UNVERIFIED_SSL") != "" {
-		parsed, err := strconv.ParseBool(os.Getenv("VSPHERE_ALLOW_UNVERIFIED_SSL"))
+	unverifiedSSLEnv := os.Getenv("VSPHERE_ALLOW_UNVERIFIED_SSL")
+	if unverifiedSSLEnv != "" && vsphereConfig.AllowUnverifiedSSL == nil {
+		parsed, err := strconv.ParseBool(unverifiedSSLEnv)
 		if err != nil {
+			return nil, fmt.Errorf("Failed to parse VSPHERE_ALLOW_UNVERIFIED_SSL: Value: %s, Error: %v", unverifiedSSLEnv, err)
 		}
 		allowUnverifiedSSL = parsed
 	}
 
-	if vsphereServer == "" && vsphereConfig.VsphereServer != nil {
+	if vsphereConfig.AllowUnverifiedSSL != nil {
+		allowUnverifiedSSL = *vsphereConfig.AllowUnverifiedSSL
+	}
+
+	if vsphereConfig.VsphereServer != nil {
 		vsphereServer = *vsphereConfig.VsphereServer
 	}
 
-	if user == "" && vsphereConfig.User != nil {
+	if vsphereConfig.User != nil {
 		user = *vsphereConfig.User
 	}
 
-	if password == "" && vsphereConfig.Password != nil {
+	if vsphereConfig.Password != nil {
 		password = *vsphereConfig.Password
 	}
 
