@@ -35,7 +35,7 @@ steampipe plugin install theapsgroup/vsphere
 
 Configuration can be done using both a configuration file and environment variables.
 
-Note: Environment variables will take precedence of values set in the config file.
+Note: Configuration file variables will take precedence over environment variables.
 
 Configuration File:
 
