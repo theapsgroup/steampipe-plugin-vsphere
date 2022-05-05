@@ -25,3 +25,6 @@
 .history/
 
 steampipe-plugin-vsphere
+
+.idea
+.idea/*

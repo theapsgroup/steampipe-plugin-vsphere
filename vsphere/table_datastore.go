@@ -1,69 +1,69 @@
 package vsphere
 
 import (
-	"context"
-	"fmt"
+    "context"
+    "fmt"
 
-	"github.com/turbot/steampipe-plugin-sdk/grpc/proto"
-	"github.com/turbot/steampipe-plugin-sdk/plugin"
-	"github.com/vmware/govmomi/view"
-	"github.com/vmware/govmomi/vim25/mo"
+    "github.com/turbot/steampipe-plugin-sdk/v3/grpc/proto"
+    "github.com/turbot/steampipe-plugin-sdk/v3/plugin"
+    "github.com/vmware/govmomi/view"
+    "github.com/vmware/govmomi/vim25/mo"
 )
 
 type Datastore struct {
-	Name        string
-	Capacity    int64
-	Free        int64
-	Uncommitted int64
-	Accessible  bool
-	Type        string
+    Name        string
+    Capacity    int64
+    Free        int64
+    Uncommitted int64
+    Accessible  bool
+    Type        string
 }
 
 func tableDatastore() *plugin.Table {
-	return &plugin.Table{
-		Name:        "vsphere_datastore",
-		Description: "Vsphere datastores",
-		List: &plugin.ListConfig{
-			Hydrate: listDatastores,
-		},
-		Columns: []*plugin.Column{
-			{Name: "name", Type: proto.ColumnType_STRING, Description: "The name of the datastore"},
-			{Name: "capacity", Type: proto.ColumnType_INT, Description: "Maximum capacity of this datastore in bytes"},
-			{Name: "uncommitted", Type: proto.ColumnType_INT, Description: "Total additional storage space, in bytes, potentially used by all virtual machines on this datastore"},
-			{Name: "free", Type: proto.ColumnType_INT, Description: "Available space of this datastore, in bytes"},
-			{Name: "accessible", Type: proto.ColumnType_BOOL, Description: "The connectivity status of this datastore"},
-			{Name: "type", Type: proto.ColumnType_STRING, Description: "Type of file system volume, such as VMFS or NFS"},
-		},
-	}
+    return &plugin.Table{
+        Name:        "vsphere_datastore",
+        Description: "Vsphere datastores",
+        List: &plugin.ListConfig{
+            Hydrate: listDatastores,
+        },
+        Columns: []*plugin.Column{
+            {Name: "name", Type: proto.ColumnType_STRING, Description: "The name of the datastore"},
+            {Name: "capacity", Type: proto.ColumnType_INT, Description: "Maximum capacity of this datastore in bytes"},
+            {Name: "uncommitted", Type: proto.ColumnType_INT, Description: "Total additional storage space, in bytes, potentially used by all virtual machines on this datastore"},
+            {Name: "free", Type: proto.ColumnType_INT, Description: "Available space of this datastore, in bytes"},
+            {Name: "accessible", Type: proto.ColumnType_BOOL, Description: "The connectivity status of this datastore"},
+            {Name: "type", Type: proto.ColumnType_STRING, Description: "Type of file system volume, such as VMFS or NFS"},
+        },
+    }
 }
 
 func listDatastores(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
-	client, err := connect(ctx, d)
-	if err != nil {
-		return nil, fmt.Errorf(fmt.Sprintf("Error connecting to vsphere: %v", err))
-	}
+    client, err := connect(ctx, d)
+    if err != nil {
+        return nil, fmt.Errorf(fmt.Sprintf("Error connecting to vsphere: %v", err))
+    }
 
-	manager := view.NewManager(client)
+    manager := view.NewManager(client)
 
-	var dss []mo.Datastore
-	datastoreView, err := manager.CreateContainerView(ctx, client.ServiceContent.RootFolder, []string{"Datastore"}, true)
-	if err != nil {
-		return nil, fmt.Errorf(fmt.Sprintf("Error creating datastore container view: %v", err))
-	}
-	err = datastoreView.Retrieve(ctx, []string{"Datastore"}, []string{"summary"}, &dss)
-	if err != nil {
-		return nil, fmt.Errorf(fmt.Sprintf("Error listing datastore summary: %v", err))
-	}
+    var dss []mo.Datastore
+    datastoreView, err := manager.CreateContainerView(ctx, client.ServiceContent.RootFolder, []string{"Datastore"}, true)
+    if err != nil {
+        return nil, fmt.Errorf(fmt.Sprintf("Error creating datastore container view: %v", err))
+    }
+    err = datastoreView.Retrieve(ctx, []string{"Datastore"}, []string{"summary"}, &dss)
+    if err != nil {
+        return nil, fmt.Errorf(fmt.Sprintf("Error listing datastore summary: %v", err))
+    }
 
-	for _, ds := range dss {
-		d.StreamListItem(ctx, Datastore{
-			Name:        ds.Summary.Name,
-			Capacity:    ds.Summary.Capacity,
-			Uncommitted: ds.Summary.Uncommitted,
-			Free:        ds.Summary.FreeSpace,
-			Accessible:  ds.Summary.Accessible,
-			Type:        ds.Summary.Type,
-		})
-	}
-	return nil, nil
+    for _, ds := range dss {
+        d.StreamListItem(ctx, Datastore{
+            Name:        ds.Summary.Name,
+            Capacity:    ds.Summary.Capacity,
+            Uncommitted: ds.Summary.Uncommitted,
+            Free:        ds.Summary.FreeSpace,
+            Accessible:  ds.Summary.Accessible,
+            Type:        ds.Summary.Type,
+        })
+    }
+    return nil, nil
 }
