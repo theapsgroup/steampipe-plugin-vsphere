@@ -1,3 +1,9 @@
+## v0.1.1 [2022-10-08]
+
+_Enhancements_
+- Upgraded golang to version 1.19
+- Upgraded steampipe sdk version to v4.1.7
+
 ## v0.1.0 [2022-05-05]
 
 _Enhancements_
