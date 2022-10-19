@@ -61,7 +61,7 @@ func listVms(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (i
 	if err != nil {
 		return nil, fmt.Errorf(fmt.Sprintf("Error creating vm view: %v", err))
 	}
-	err = vmView.Retrieve(ctx, []string{"VirtualMachine"}, []string{"summary"}, &vms)
+	err = vmView.Retrieve(ctx, []string{"VirtualMachine"}, []string{"summary", "runtime"}, &vms)
 	if err != nil {
 		return nil, fmt.Errorf(fmt.Sprintf("Error listing vm summary: %v", err))
 	}
