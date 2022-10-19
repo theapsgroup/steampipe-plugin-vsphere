@@ -2,14 +2,14 @@ connection "vsphere" {
   plugin = "theapsgroup/vsphere"
 
   # The url vsphere lives at
-  # baseurl  = "192.168.122.233"
+  # vsphere_server = "192.168.122.233"
 
   # vsphere username
-  # username  = "root"
+  # user = "administrator@vsphere.local"
 
   # vsphere password
   # password  = "s0Mep@ss"
 
   # TLS cert validation
-  # insecure = true
+  # allow_unverified_ssl = true
 }
