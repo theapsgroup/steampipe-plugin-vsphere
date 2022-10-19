@@ -17,6 +17,7 @@ type VM struct {
 	NumCPU           int32
 	IPAddress        string
 	Uptime           int32
+	PowerStatus      string
 	Status           string
 	CPUUsage         int32
 	GuestMemoryUsage int32
@@ -37,6 +38,7 @@ func tableVm() *plugin.Table {
 			{Name: "num_cpu", Type: proto.ColumnType_INT, Description: "Number of virtual processors in the virtual machine"},
 			{Name: "ip_address", Type: proto.ColumnType_STRING, Description: "Primary IP address assigned to the guest operating system, if known"},
 			{Name: "uptime", Type: proto.ColumnType_INT, Description: "The guest uptime in seconds"},
+			{Name: "powerstatus", Type: proto.ColumnType_STRING, Description: "The power state of this vm"},
 			{Name: "status", Type: proto.ColumnType_STRING, Description: "The overall guest status"},
 			{Name: "cpu_usage", Type: proto.ColumnType_INT, Description: "VM cpu usage in mhz"},
 			{Name: "guest_memory_usage", Type: proto.ColumnType_INT, Description: "Current memory usage in mb"},
@@ -71,6 +73,7 @@ func listVms(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (i
 			NumCPU:           vm.Summary.Config.NumCpu,
 			IPAddress:        vm.Summary.Guest.IpAddress,
 			Uptime:           vm.Summary.QuickStats.UptimeSeconds,
+			PowerStatus:      string(vm.Runtime.PowerState),
 			Status:           string(vm.Summary.OverallStatus),
 			CPUUsage:         vm.Summary.QuickStats.OverallCpuUsage,
 			GuestMemoryUsage: vm.Summary.QuickStats.GuestMemoryUsage,
