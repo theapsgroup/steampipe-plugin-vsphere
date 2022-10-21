@@ -1,4 +1,4 @@
-## v0.1.2 [WIP]
+## v0.1.2 [2022-10-21]
 
 _Enhancements_
 - Updated `vsphere_vm` to include new column `power` to indicated power state of the VM. - Thanks [@AnyKeyNL](https://github.com/AnykeyNL) 
