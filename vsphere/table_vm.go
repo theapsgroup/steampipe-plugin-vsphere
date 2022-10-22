@@ -38,6 +38,7 @@ func tableVm() *plugin.Table {
 			{Name: "name", Type: proto.ColumnType_STRING, Description: "The name of the virtual machine"},
 			{Name: "memory", Type: proto.ColumnType_INT, Description: "Memory size of the virtual machine in MB"},
 			{Name: "num_cpu", Type: proto.ColumnType_INT, Description: "Number of virtual processors in the virtual machine"},
+			{Name: "vm_hardware", Type: proto.ColumnType_STRING, Description: "Version of the virtual hardware"},
 			{Name: "ip_address", Type: proto.ColumnType_STRING, Description: "Primary IP address assigned to the guest operating system, if known"},
 			{Name: "uptime", Type: proto.ColumnType_INT, Description: "The guest uptime in seconds"},
 			{Name: "power", Type: proto.ColumnType_STRING, Description: "The powerstate of this vm"},
@@ -45,7 +46,6 @@ func tableVm() *plugin.Table {
 			{Name: "cpu_usage", Type: proto.ColumnType_INT, Description: "VM cpu usage in mhz"},
 			{Name: "guest_memory_usage", Type: proto.ColumnType_INT, Description: "Current memory usage in mb"},
 			{Name: "host_memory_usage", Type: proto.ColumnType_INT, Description: "Consumed memory on the host by this vm"},
-			{Name: "vm_hardware", Type: proto.ColumnType_STRING, Description: "Version of the virtual hardware"},
 			{Name: "dummy", Type: proto.ColumnType_STRING, Description: "Version of the virtual hardware"},
 		},
 	}
@@ -76,6 +76,7 @@ func listVms(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (i
 			Name:             vm.Summary.Config.HwVersion,
 			Memory:           vm.Summary.Config.MemorySizeMB,
 			NumCPU:           vm.Summary.Config.NumCpu,
+			VMhardware:       vm.Summary.Config.HwVersion,
 			IPAddress:        vm.Summary.Guest.IpAddress,
 			Uptime:           vm.Summary.QuickStats.UptimeSeconds,
 			Power:            string(vm.Runtime.PowerState),
@@ -83,7 +84,6 @@ func listVms(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (i
 			CPUUsage:         vm.Summary.QuickStats.OverallCpuUsage,
 			GuestMemoryUsage: vm.Summary.QuickStats.GuestMemoryUsage,
 			HostMemoryUsage:  vm.Summary.QuickStats.HostMemoryUsage,
-			VMhardware:       vm.Summary.Config.HwVersion,
 			dummy:            "dummy",
 		})
 
