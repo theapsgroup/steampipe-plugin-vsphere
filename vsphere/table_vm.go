@@ -58,12 +58,12 @@ func listVms(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (i
 	manager := view.NewManager(client)
 
 	var vms []mo.VirtualMachine
-	// https://code.vmware.com/apis/704/vsphere/vim.VirtualMachine.htmlq
+	// https://code.vmware.com/apis/704/vsphere/vim.VirtualMachine.html
 	vmView, err := manager.CreateContainerView(ctx, client.ServiceContent.RootFolder, []string{"VirtualMachine"}, true)
 	if err != nil {
 		return nil, fmt.Errorf(fmt.Sprintf("Error creating vm view: %v", err))
 	}
-	err = vmView.Retrieve(ctx, []string{"VirtualMachine"}, []string{"summary", "runtime"}, &vms)
+	err = vmView.Retrieve(ctx, []string{"VirtualMachine"}, []string{"summary", "runtime", "config"}, &vms)
 	if err != nil {
 		return nil, fmt.Errorf(fmt.Sprintf("Error listing vm summary: %v", err))
 	}
@@ -71,7 +71,8 @@ func listVms(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (i
 
 		d.StreamListItem(ctx, VM{
 			ID:               vm.Summary.Config.GuestId,
-			Name:             vm.Summary.Config.HwVersion,
+			//Name:             vm.Summary.Config.HwVersion,
+			Name:             vm.config.version,
 			Memory:           vm.Summary.Config.MemorySizeMB,
 			NumCPU:           vm.Summary.Config.NumCpu,
 			VMhardware:       vm.Summary.Config.Name,
