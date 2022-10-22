@@ -44,7 +44,7 @@ func tableVm() *plugin.Table {
 			{Name: "cpu_usage", Type: proto.ColumnType_INT, Description: "VM cpu usage in mhz"},
 			{Name: "guest_memory_usage", Type: proto.ColumnType_INT, Description: "Current memory usage in mb"},
 			{Name: "host_memory_usage", Type: proto.ColumnType_INT, Description: "Consumed memory on the host by this vm"},
-			{Name: "vm_version", Type: proto.ColumnType_STRING, Description: "Version of the virtual hardware"},
+			{Name: "vm_hardware", Type: proto.ColumnType_STRING, Description: "Version of the virtual hardware"},
 		},
 	}
 }
