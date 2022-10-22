@@ -86,7 +86,7 @@ func listVms(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (i
 			GuestMemoryUsage: vm.Summary.QuickStats.GuestMemoryUsage,
 			HostMemoryUsage:  vm.Summary.QuickStats.HostMemoryUsage,
 			VMhardware:       vm.Summary.Config.HwVersion,
-			dummy:            dummytxt
+			dummy:            dummytxt,
 		})
 
 	}
