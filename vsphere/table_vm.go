@@ -22,6 +22,7 @@ type VM struct {
 	CPUUsage         int32
 	GuestMemoryUsage int32
 	HostMemoryUsage  int32
+	VMversion        string
 }
 
 func tableVm() *plugin.Table {
@@ -43,6 +44,7 @@ func tableVm() *plugin.Table {
 			{Name: "cpu_usage", Type: proto.ColumnType_INT, Description: "VM cpu usage in mhz"},
 			{Name: "guest_memory_usage", Type: proto.ColumnType_INT, Description: "Current memory usage in mb"},
 			{Name: "host_memory_usage", Type: proto.ColumnType_INT, Description: "Consumed memory on the host by this vm"},
+			{Name: "vm_version", Type: proto.ColumnType_STRING, Description: "Version of the virtual hardware"},
 		},
 	}
 }
@@ -61,7 +63,7 @@ func listVms(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (i
 	if err != nil {
 		return nil, fmt.Errorf(fmt.Sprintf("Error creating vm view: %v", err))
 	}
-	err = vmView.Retrieve(ctx, []string{"VirtualMachine"}, []string{"summary", "runtime"}, &vms)
+	err = vmView.Retrieve(ctx, []string{"VirtualMachine"}, []string{"summary", "runtime", "config"}, &vms)
 	if err != nil {
 		return nil, fmt.Errorf(fmt.Sprintf("Error listing vm summary: %v", err))
 	}
@@ -79,6 +81,7 @@ func listVms(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (i
 			CPUUsage:         vm.Summary.QuickStats.OverallCpuUsage,
 			GuestMemoryUsage: vm.Summary.QuickStats.GuestMemoryUsage,
 			HostMemoryUsage:  vm.Summary.QuickStats.HostMemoryUsage,
+			VMversion:        vm.Config.version,
 		})
 
 	}
