@@ -71,11 +71,11 @@ func listVms(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (i
 
 		d.StreamListItem(ctx, VM{
 			ID:               vm.Summary.Config.GuestId,
-			//Name:             vm.Summary.Config.HwVersion,
-			Name:             vm.config.version,
+			Name:             vm.Summary.Config.name,
+			//Name:             vm.config.version,
 			Memory:           vm.Summary.Config.MemorySizeMB,
 			NumCPU:           vm.Summary.Config.NumCpu,
-			VMhardware:       vm.Summary.Config.Name,
+			VMhardware:       vm.Summary.Config.HwVersion,
 			IPAddress:        vm.Summary.Guest.IpAddress,
 			Uptime:           vm.Summary.QuickStats.UptimeSeconds,
 			Power:            string(vm.Runtime.PowerState),
