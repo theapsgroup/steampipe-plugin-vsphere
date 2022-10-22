@@ -22,7 +22,7 @@ type VM struct {
 	CPUUsage         int32
 	GuestMemoryUsage int32
 	HostMemoryUsage  int32
-	VMversion        string
+	VMhardware       string
 }
 
 func tableVm() *plugin.Table {
@@ -71,7 +71,7 @@ func listVms(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (i
 
 		d.StreamListItem(ctx, VM{
 			ID:               vm.Summary.Config.GuestId,
-			Name:             vm.Summary.Config.Name,
+			Name:             vm.Summary.Config.HwVersion,
 			Memory:           vm.Summary.Config.MemorySizeMB,
 			NumCPU:           vm.Summary.Config.NumCpu,
 			IPAddress:        vm.Summary.Guest.IpAddress,
@@ -81,7 +81,7 @@ func listVms(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (i
 			CPUUsage:         vm.Summary.QuickStats.OverallCpuUsage,
 			GuestMemoryUsage: vm.Summary.QuickStats.GuestMemoryUsage,
 			HostMemoryUsage:  vm.Summary.QuickStats.HostMemoryUsage,
-			VMversion:        vm.Summary.Config.HwVersion,
+			VMhardware:       vm.Summary.Config.HwVersion,
 		})
 
 	}
