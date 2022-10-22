@@ -15,6 +15,7 @@ type VM struct {
 	Name             string
 	Memory           int32
 	NumCPU           int32
+	VMhardware       string
 	IPAddress        string
 	Uptime           int32
 	Power            string
@@ -22,7 +23,6 @@ type VM struct {
 	CPUUsage         int32
 	GuestMemoryUsage int32
 	HostMemoryUsage  int32
-	VMhardware       string
 	dummy            string
 }
 
