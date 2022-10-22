@@ -71,8 +71,6 @@ func listVms(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (i
 	}
 	for _, vm := range vms {
 
-        dummytxt = "yup"
-
 		d.StreamListItem(ctx, VM{
 			ID:               vm.Summary.Config.GuestId,
 			Name:             vm.Summary.Config.HwVersion,
@@ -86,7 +84,7 @@ func listVms(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (i
 			GuestMemoryUsage: vm.Summary.QuickStats.GuestMemoryUsage,
 			HostMemoryUsage:  vm.Summary.QuickStats.HostMemoryUsage,
 			VMhardware:       vm.Summary.Config.HwVersion,
-			dummy:            dummytxt,
+			dummy:            "dummy",
 		})
 
 	}
