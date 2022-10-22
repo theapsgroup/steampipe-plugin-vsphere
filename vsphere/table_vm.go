@@ -23,6 +23,7 @@ type VM struct {
 	GuestMemoryUsage int32
 	HostMemoryUsage  int32
 	VMhardware       string
+	dummy            string
 }
 
 func tableVm() *plugin.Table {
@@ -45,6 +46,7 @@ func tableVm() *plugin.Table {
 			{Name: "guest_memory_usage", Type: proto.ColumnType_INT, Description: "Current memory usage in mb"},
 			{Name: "host_memory_usage", Type: proto.ColumnType_INT, Description: "Consumed memory on the host by this vm"},
 			{Name: "vm_hardware", Type: proto.ColumnType_STRING, Description: "Version of the virtual hardware"},
+			{Name: "dummy", Type: proto.ColumnType_STRING, Description: "Version of the virtual hardware"},
 		},
 	}
 }
@@ -69,6 +71,8 @@ func listVms(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (i
 	}
 	for _, vm := range vms {
 
+        dummytxt = "yup"
+
 		d.StreamListItem(ctx, VM{
 			ID:               vm.Summary.Config.GuestId,
 			Name:             vm.Summary.Config.HwVersion,
@@ -82,6 +86,7 @@ func listVms(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (i
 			GuestMemoryUsage: vm.Summary.QuickStats.GuestMemoryUsage,
 			HostMemoryUsage:  vm.Summary.QuickStats.HostMemoryUsage,
 			VMhardware:       vm.Summary.Config.HwVersion,
+			dummy:            dummytxt
 		})
 
 	}
