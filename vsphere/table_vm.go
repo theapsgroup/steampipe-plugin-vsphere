@@ -23,7 +23,6 @@ type VM struct {
 	CPUUsage         int32
 	GuestMemoryUsage int32
 	HostMemoryUsage  int32
-	dummy            string
 }
 
 func tableVm() *plugin.Table {
@@ -46,7 +45,6 @@ func tableVm() *plugin.Table {
 			{Name: "cpu_usage", Type: proto.ColumnType_INT, Description: "VM cpu usage in mhz"},
 			{Name: "guest_memory_usage", Type: proto.ColumnType_INT, Description: "Current memory usage in mb"},
 			{Name: "host_memory_usage", Type: proto.ColumnType_INT, Description: "Consumed memory on the host by this vm"},
-			{Name: "dummy", Type: proto.ColumnType_STRING, Description: "Version of the virtual hardware"},
 		},
 	}
 }
@@ -60,7 +58,7 @@ func listVms(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (i
 	manager := view.NewManager(client)
 
 	var vms []mo.VirtualMachine
-	// https://code.vmware.com/apis/704/vsphere/vim.VirtualMachine.html
+	// https://code.vmware.com/apis/704/vsphere/vim.VirtualMachine.htmlq
 	vmView, err := manager.CreateContainerView(ctx, client.ServiceContent.RootFolder, []string{"VirtualMachine"}, true)
 	if err != nil {
 		return nil, fmt.Errorf(fmt.Sprintf("Error creating vm view: %v", err))
@@ -84,7 +82,6 @@ func listVms(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (i
 			CPUUsage:         vm.Summary.QuickStats.OverallCpuUsage,
 			GuestMemoryUsage: vm.Summary.QuickStats.GuestMemoryUsage,
 			HostMemoryUsage:  vm.Summary.QuickStats.HostMemoryUsage,
-			dummy:            "dummy",
 		})
 
 	}
