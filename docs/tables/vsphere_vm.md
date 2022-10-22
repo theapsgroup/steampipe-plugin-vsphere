@@ -35,3 +35,33 @@ from
 where
   name ILIKE '%test%' and uptime > 3600;
 ```
+
+### Select all VMs showing their powerstate and on which host they are running
+
+```sql
+ select 
+    vm.name, host.name, vm.power 
+  from vc.vsphere_vm as vm 
+  inner join vc.vsphere_host as host 
+  on vm.hostmoref = host.hostmoref
+```
+
+### Total Actual disk usage per VM 
+
+```sql
+with  
+    alldisks as (
+        select 
+            jsonb_array_elements(storage) as disks, 
+            name, 
+            moref 
+        from vc.vsphere_vm) 
+    select 
+        moref, 
+        (array_agg(name))[1] as Name, 
+        sum(disks['Committed']::bigint/(1024*1024*1024)) as UsageGB, 
+        count(disks['Committed']) as NumDisks 
+    from alldisks 
+    group by moref
+```
+
