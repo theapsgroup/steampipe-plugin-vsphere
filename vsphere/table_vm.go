@@ -74,7 +74,7 @@ func listVms(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (i
 			Name:             vm.Summary.Config.HwVersion,
 			Memory:           vm.Summary.Config.MemorySizeMB,
 			NumCPU:           vm.Summary.Config.NumCpu,
-			VMhardware:       vm.Summary.Config.HwVersion,
+			VMhardware:       vm.Summary.Config.Name,
 			IPAddress:        vm.Summary.Guest.IpAddress,
 			Uptime:           vm.Summary.QuickStats.UptimeSeconds,
 			Power:            string(vm.Runtime.PowerState),
