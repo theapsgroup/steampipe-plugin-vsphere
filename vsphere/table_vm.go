@@ -28,6 +28,7 @@ type VM struct {
 	HostMemoryUsage  int32
 	Hostmoref        string
 	Storageconsumed  string
+	Devices          string
 }
 
 func tableVm() *plugin.Table {
@@ -54,6 +55,7 @@ func tableVm() *plugin.Table {
 			{Name: "host_memory_usage", Type: proto.ColumnType_INT, Description: "Consumed memory on the host by this vm"},
 			{Name: "hostmoref", Type: proto.ColumnType_STRING, Description: "The host that is responsible for running a virtual machine."},
 			{Name: "storageconsumed", Type: proto.ColumnType_JSON, Description: "Consumed Storage Usage"},
+			{Name: "devices", Type: proto.ColumnType_JSON, Description: "Virtual Machine hardware devices"},
 			{Name: "raw", Type: proto.ColumnType_JSON, Description: "Raw data.", Transform: transform.FromValue()},
 		},
 	}
@@ -80,6 +82,7 @@ func listVms(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (i
 	for _, vm := range vms {
 
         jsonBytes, _ := json.Marshal(vm.Storage.PerDatastoreUsage)
+        jsonDevices, _ := json.Marshal(vm.Config.Hardware.Device)
 
 		d.StreamListItem(ctx, VM{
 			ID:               vm.Summary.Config.GuestId,
@@ -98,6 +101,7 @@ func listVms(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (i
 			HostMemoryUsage:  vm.Summary.QuickStats.HostMemoryUsage,
 			Hostmoref:        vm.Runtime.Host.Value,
 			Storageconsumed:  string(jsonBytes),
+			Devices:          string(jsonDevices),
 		})
 
 	}
