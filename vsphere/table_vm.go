@@ -6,7 +6,7 @@ import (
     "encoding/json"
 	"github.com/turbot/steampipe-plugin-sdk/v4/grpc/proto"
 	"github.com/turbot/steampipe-plugin-sdk/v4/plugin"
-	"github.com/turbot/steampipe-plugin-sdk/v4/plugin/transform"
+	//"github.com/turbot/steampipe-plugin-sdk/v4/plugin/transform"
 	"github.com/vmware/govmomi/view"
 	"github.com/vmware/govmomi/vim25/mo"
 )
@@ -56,7 +56,7 @@ func tableVm() *plugin.Table {
 			{Name: "hostmoref", Type: proto.ColumnType_STRING, Description: "The host that is responsible for running a virtual machine."},
 			{Name: "storageconsumed", Type: proto.ColumnType_JSON, Description: "Consumed Storage Usage"},
 			{Name: "devices", Type: proto.ColumnType_JSON, Description: "Virtual Machine hardware devices"},
-			{Name: "raw", Type: proto.ColumnType_JSON, Description: "Raw data.", Transform: transform.FromValue()},
+			//{Name: "raw", Type: proto.ColumnType_JSON, Description: "Raw data.", Transform: transform.FromValue()},
 		},
 	}
 }
