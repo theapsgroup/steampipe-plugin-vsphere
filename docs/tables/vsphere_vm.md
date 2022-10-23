@@ -46,7 +46,7 @@ where
   on vm.hostmoref = host.hostmoref
 ```
 
-### Total Actual storage consumption per VM in Gigabytes and on how many/which datastores
+### Total Actual storage consumption per VM Order by size in Gigabytes and on how many/which datastores
 
 ```sql
 with  
@@ -64,6 +64,7 @@ with
         string_agg(disks['Datastore']['Value']::text, ', ') as Datastores
     from alldisks 
     group by moref
+    order by UsageGB desc
 ```
 
 ### Show all virtual disks in order of size that are used by all the VMs with size and type information
