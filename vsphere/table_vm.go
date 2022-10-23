@@ -6,7 +6,7 @@ import (
     "encoding/json"
 	"github.com/turbot/steampipe-plugin-sdk/v4/grpc/proto"
 	"github.com/turbot/steampipe-plugin-sdk/v4/plugin"
-	//"github.com/turbot/steampipe-plugin-sdk/v4/plugin/transform"
+	"github.com/turbot/steampipe-plugin-sdk/v4/plugin/transform"
 	"github.com/vmware/govmomi/view"
 	"github.com/vmware/govmomi/vim25/mo"
 )
@@ -27,7 +27,7 @@ type VM struct {
 	GuestMemoryUsage int32
 	HostMemoryUsage  int32
 	Hostmoref        string
-	Storage          string
+	Storageconsumed  string
 }
 
 func tableVm() *plugin.Table {
@@ -53,8 +53,8 @@ func tableVm() *plugin.Table {
 			{Name: "guest_memory_usage", Type: proto.ColumnType_INT, Description: "Current memory usage in mb"},
 			{Name: "host_memory_usage", Type: proto.ColumnType_INT, Description: "Consumed memory on the host by this vm"},
 			{Name: "hostmoref", Type: proto.ColumnType_STRING, Description: "The host that is responsible for running a virtual machine."},
-			{Name: "storage", Type: proto.ColumnType_JSON, Description: "Storage Usage"},
-			//{Name: "raw", Type: proto.ColumnType_JSON, Description: "Raw data.", Transform: transform.FromValue()},
+			{Name: "storageconsumed", Type: proto.ColumnType_JSON, Description: "Consumed Storage Usage"},
+			{Name: "raw", Type: proto.ColumnType_JSON, Description: "Raw data.", Transform: transform.FromValue()},
 		},
 	}
 }
@@ -97,7 +97,7 @@ func listVms(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (i
 			GuestMemoryUsage: vm.Summary.QuickStats.GuestMemoryUsage,
 			HostMemoryUsage:  vm.Summary.QuickStats.HostMemoryUsage,
 			Hostmoref:        vm.Runtime.Host.Value,
-			Storage:          string(jsonBytes),
+			Storageconsumed:  string(jsonBytes),
 		})
 
 	}

@@ -25,7 +25,7 @@ where
   num_cpu > 6;
 ```
 
-### Select all vms with a name containing test and and uptime of more than 1 hour
+### Select all vms with a name containing test and an uptime of more than 1 hour
 
 ```sql
 select
@@ -46,13 +46,13 @@ where
   on vm.hostmoref = host.hostmoref
 ```
 
-### Total Actual disk usage per VM 
+### Total Actual disk consumption per VM in Gigabytes 
 
 ```sql
 with  
     alldisks as (
         select 
-            jsonb_array_elements(storage) as disks, 
+            jsonb_array_elements(storageconsumed) as disks, 
             name, 
             moref 
         from vc.vsphere_vm) 
@@ -60,7 +60,7 @@ with
         moref, 
         (array_agg(name))[1] as Name, 
         sum(disks['Committed']::bigint/(1024*1024*1024)) as UsageGB, 
-        count(disks['Committed']) as NumDisks 
+        count(disks['Committed']) as Datastores 
     from alldisks 
     group by moref
 ```
