@@ -12,7 +12,7 @@ import (
 
 type Network struct {
 	Name       string
-    Moref      string
+	Moref      string
 	Type       string
 	IPPoolName string
 	IPPoolId   int32
@@ -66,7 +66,7 @@ func listNetworks(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateDat
 
 		d.StreamListItem(ctx, Network{
 			Name:       summary.Name,
-		    Moref:      summary.Network.Value,
+			Moref:      summary.Network.Value,
 			Type:       summary.Network.Type,
 			IPPoolName: summary.IpPoolName,
 			IPPoolId:   ippoolid,

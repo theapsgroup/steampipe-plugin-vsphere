@@ -2,8 +2,8 @@ package vsphere
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
-    "encoding/json"
 	"github.com/turbot/steampipe-plugin-sdk/v4/grpc/proto"
 	"github.com/turbot/steampipe-plugin-sdk/v4/plugin"
 	//"github.com/turbot/steampipe-plugin-sdk/v4/plugin/transform"
@@ -81,8 +81,8 @@ func listVms(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (i
 	}
 	for _, vm := range vms {
 
-        jsonBytes, _ := json.Marshal(vm.Storage.PerDatastoreUsage)
-        jsonDevices, _ := json.Marshal(vm.Config.Hardware.Device)
+		jsonBytes, _ := json.Marshal(vm.Storage.PerDatastoreUsage)
+		jsonDevices, _ := json.Marshal(vm.Config.Hardware.Device)
 
 		d.StreamListItem(ctx, VM{
 			ID:               vm.Summary.Config.GuestId,

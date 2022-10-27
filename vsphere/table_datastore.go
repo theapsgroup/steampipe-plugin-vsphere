@@ -12,7 +12,7 @@ import (
 
 type Datastore struct {
 	Name        string
-    Moref       string
+	Moref       string
 	Capacity    int64
 	Free        int64
 	Uncommitted int64
