@@ -6,7 +6,6 @@ import (
 
 	"github.com/turbot/steampipe-plugin-sdk/v4/grpc/proto"
 	"github.com/turbot/steampipe-plugin-sdk/v4/plugin"
-	//"github.com/turbot/steampipe-plugin-sdk/v4/plugin/transform"
 	"github.com/vmware/govmomi/view"
 	"github.com/vmware/govmomi/vim25/mo"
 )
@@ -54,7 +53,6 @@ func tableHost() *plugin.Table {
 			{Name: "memory_usage", Type: proto.ColumnType_INT, Description: "Current memory usage in MB"},
 			{Name: "uptime", Type: proto.ColumnType_INT, Description: "The uptime in seconds"},
 			{Name: "product", Type: proto.ColumnType_STRING, Description: "The complete VMware product name, including the version information."},
-			//{Name: "raw", Type: proto.ColumnType_JSON, Description: "Raw data.", Transform: transform.FromValue()},
 		},
 	}
 }

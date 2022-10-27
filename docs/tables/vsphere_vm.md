@@ -43,7 +43,7 @@ where
     vm.name, host.name, vm.power 
   from vc.vsphere_vm as vm 
   inner join vc.vsphere_host as host 
-  on vm.hostmoref = host.hostmoref
+  on vm.host_moref = host.host_moref
 ```
 
 ### Total Actual storage consumption per VM Order by size in Gigabytes and on how many/which datastores

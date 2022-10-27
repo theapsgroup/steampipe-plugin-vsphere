@@ -4,9 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+
 	"github.com/turbot/steampipe-plugin-sdk/v4/grpc/proto"
 	"github.com/turbot/steampipe-plugin-sdk/v4/plugin"
-	//"github.com/turbot/steampipe-plugin-sdk/v4/plugin/transform"
 	"github.com/vmware/govmomi/view"
 	"github.com/vmware/govmomi/vim25/mo"
 )
@@ -26,8 +26,8 @@ type VM struct {
 	CPUUsage         int32
 	GuestMemoryUsage int32
 	HostMemoryUsage  int32
-	Hostmoref        string
-	Storageconsumed  string
+	HostMoref        string
+	StorageConsumed  string
 	Devices          string
 }
 
@@ -53,10 +53,9 @@ func tableVm() *plugin.Table {
 			{Name: "cpu_usage", Type: proto.ColumnType_INT, Description: "VM cpu usage in mhz"},
 			{Name: "guest_memory_usage", Type: proto.ColumnType_INT, Description: "Current memory usage in mb"},
 			{Name: "host_memory_usage", Type: proto.ColumnType_INT, Description: "Consumed memory on the host by this vm"},
-			{Name: "hostmoref", Type: proto.ColumnType_STRING, Description: "The host that is responsible for running a virtual machine."},
-			{Name: "storageconsumed", Type: proto.ColumnType_JSON, Description: "Consumed Storage Usage"},
+			{Name: "host_moref", Type: proto.ColumnType_STRING, Description: "The host that is responsible for running a virtual machine."},
+			{Name: "storage_consumed", Type: proto.ColumnType_JSON, Description: "Consumed Storage Usage"},
 			{Name: "devices", Type: proto.ColumnType_JSON, Description: "Virtual Machine hardware devices"},
-			//{Name: "raw", Type: proto.ColumnType_JSON, Description: "Raw data.", Transform: transform.FromValue()},
 		},
 	}
 }
@@ -99,8 +98,8 @@ func listVms(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (i
 			CPUUsage:         vm.Summary.QuickStats.OverallCpuUsage,
 			GuestMemoryUsage: vm.Summary.QuickStats.GuestMemoryUsage,
 			HostMemoryUsage:  vm.Summary.QuickStats.HostMemoryUsage,
-			Hostmoref:        vm.Runtime.Host.Value,
-			Storageconsumed:  string(jsonBytes),
+			HostMoref:        vm.Runtime.Host.Value,
+			StorageConsumed:  string(jsonBytes),
 			Devices:          string(jsonDevices),
 		})
 
