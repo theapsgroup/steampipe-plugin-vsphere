@@ -58,3 +58,10 @@ export VSPHERE_USER=root
 export VSPHERE_PASSWORD='s0Mep@ss'
 export ALLOW_UNVERIFIED_SSL=true
 ```
+
+### Example queries
+
+- [Virtual Machine related queries](tables/vsphere_vm.md)
+- [Host related queries](tables/vsphere_host.md)
+- [Datastore related queries](tables/vsphere_datastore.md)
+- [Network related queries](tables/vsphere_network.md)

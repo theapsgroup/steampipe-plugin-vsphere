@@ -20,6 +20,7 @@ func Plugin(ctx context.Context) *plugin.Plugin {
 			"vsphere_host":      tableHost(),
 			"vsphere_datastore": tableDatastore(),
 			"vsphere_network":   tableNetwork(),
+
 		},
 	}
 	return p

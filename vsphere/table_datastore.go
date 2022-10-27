@@ -12,6 +12,7 @@ import (
 
 type Datastore struct {
 	Name        string
+    Moref       string
 	Capacity    int64
 	Free        int64
 	Uncommitted int64
@@ -28,6 +29,7 @@ func tableDatastore() *plugin.Table {
 		},
 		Columns: []*plugin.Column{
 			{Name: "name", Type: proto.ColumnType_STRING, Description: "The name of the datastore"},
+			{Name: "moref", Type: proto.ColumnType_STRING, Description: "Managed object reference of the datastore"},
 			{Name: "capacity", Type: proto.ColumnType_INT, Description: "Maximum capacity of this datastore in bytes"},
 			{Name: "uncommitted", Type: proto.ColumnType_INT, Description: "Total additional storage space, in bytes, potentially used by all virtual machines on this datastore"},
 			{Name: "free", Type: proto.ColumnType_INT, Description: "Available space of this datastore, in bytes"},
@@ -58,6 +60,7 @@ func listDatastores(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateD
 	for _, ds := range dss {
 		d.StreamListItem(ctx, Datastore{
 			Name:        ds.Summary.Name,
+			Moref:       ds.Summary.Datastore.Value,
 			Capacity:    ds.Summary.Capacity,
 			Uncommitted: ds.Summary.Uncommitted,
 			Free:        ds.Summary.FreeSpace,

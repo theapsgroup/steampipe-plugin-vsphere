@@ -6,12 +6,14 @@ import (
 
 	"github.com/turbot/steampipe-plugin-sdk/v4/grpc/proto"
 	"github.com/turbot/steampipe-plugin-sdk/v4/plugin"
+	//"github.com/turbot/steampipe-plugin-sdk/v4/plugin/transform"
 	"github.com/vmware/govmomi/view"
 	"github.com/vmware/govmomi/vim25/mo"
 )
 
 type Host struct {
 	Name        string
+	Moref       string
 	Vendor      string
 	Model       string
 	CPU         string
@@ -25,6 +27,7 @@ type Host struct {
 	CPUUsage    int32
 	MemoryUsage int32
 	Uptime      int32
+	Product     string
 }
 
 func tableHost() *plugin.Table {
@@ -36,6 +39,7 @@ func tableHost() *plugin.Table {
 		},
 		Columns: []*plugin.Column{
 			{Name: "name", Type: proto.ColumnType_STRING, Description: "The name of the host"},
+			{Name: "moref", Type: proto.ColumnType_STRING, Description: "Managed object reference of the host"},
 			{Name: "vendor", Type: proto.ColumnType_STRING, Description: "The hardware vendor identification"},
 			{Name: "model", Type: proto.ColumnType_STRING, Description: "The system model identification"},
 			{Name: "cpu", Type: proto.ColumnType_STRING, Description: "The CPU model"},
@@ -49,6 +53,8 @@ func tableHost() *plugin.Table {
 			{Name: "cpu_usage", Type: proto.ColumnType_INT, Description: "Current cpu usage in mhz"},
 			{Name: "memory_usage", Type: proto.ColumnType_INT, Description: "Current memory usage in MB"},
 			{Name: "uptime", Type: proto.ColumnType_INT, Description: "The uptime in seconds"},
+			{Name: "product", Type: proto.ColumnType_STRING, Description: "The complete VMware product name, including the version information."},
+			//{Name: "raw", Type: proto.ColumnType_JSON, Description: "Raw data.", Transform: transform.FromValue()},
 		},
 	}
 }
@@ -76,6 +82,7 @@ func listHosts(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) 
 	for _, h := range hosts {
 		d.StreamListItem(ctx, Host{
 			Name:        h.Summary.Config.Name,
+			Moref:       h.Summary.Host.Value,
 			Vendor:      h.Summary.Hardware.Vendor,
 			Model:       h.Summary.Hardware.Model,
 			CPU:         h.Summary.Hardware.CpuModel,
@@ -89,6 +96,7 @@ func listHosts(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) 
 			CPUUsage:    h.Summary.QuickStats.OverallCpuUsage,
 			MemoryUsage: h.Summary.QuickStats.OverallMemoryUsage,
 			Uptime:      h.Summary.QuickStats.Uptime,
+			Product:     h.Summary.Config.Product.FullName,
 		})
 	}
 	return nil, nil

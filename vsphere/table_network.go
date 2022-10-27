@@ -12,6 +12,7 @@ import (
 
 type Network struct {
 	Name       string
+    Moref      string
 	Type       string
 	IPPoolName string
 	IPPoolId   int32
@@ -27,6 +28,7 @@ func tableNetwork() *plugin.Table {
 		},
 		Columns: []*plugin.Column{
 			{Name: "name", Type: proto.ColumnType_STRING, Description: "The name of the network"},
+			{Name: "moref", Type: proto.ColumnType_STRING, Description: "Managed object reference of the network"},
 			{Name: "type", Type: proto.ColumnType_STRING, Description: "The type of the network"},
 			{Name: "ip_pool_name", Type: proto.ColumnType_STRING, Description: "Name of the associated IP pool. Empty if the network is not associated with an IP pool"},
 			{Name: "ip_pool_id", Type: proto.ColumnType_INT, Description: "Identifier of the associated IP pool. Zero if the network is not associated with an IP pool"},
@@ -64,6 +66,7 @@ func listNetworks(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateDat
 
 		d.StreamListItem(ctx, Network{
 			Name:       summary.Name,
+		    Moref:      summary.Network.Value,
 			Type:       summary.Network.Type,
 			IPPoolName: summary.IpPoolName,
 			IPPoolId:   ippoolid,

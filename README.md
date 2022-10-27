@@ -36,7 +36,7 @@ Configuration is done via the configuration file:
 
 ## Documentation
 
-Further documentation can be [found here](https://github.com/theapsgroup/steampipe-plugin-vsphere/blob/main/docs/index.md)
+Further documentation can be [found here](docs/index.md)
 
 ## Credits
 
