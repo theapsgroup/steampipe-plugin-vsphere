@@ -1,3 +1,14 @@
+## v0.1.3 [2022-11-10]
+
+_Enhancements_
+- Added `moref` column to `vsphere_datastore` table.
+- Added `moref`, `product` columns to `vsphere_host` table.
+- Added `moref` column to `vsphere_network` table.
+- Added `moref`, `guest_full_name`, `hardware`, `host_moref`, `storage_consumed` & `devices` columns to `vpshere_vm` table.
+
+_Credits_
+- [@AnyKeyNL](https://github.com/AnykeyNL) for adding additional columns :)
+
 ## v0.1.2 [2022-10-21]
 
 _Enhancements_
