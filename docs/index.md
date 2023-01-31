@@ -61,7 +61,7 @@ export ALLOW_UNVERIFIED_SSL=true
 
 ### Example queries
 
-- [Virtual Machine related queries](tables/vsphere_vm.md)
-- [Host related queries](tables/vsphere_host.md)
-- [Datastore related queries](tables/vsphere_datastore.md)
-- [Network related queries](tables/vsphere_network.md)
+- [Virtual Machine related queries](https://hub.steampipe.io/plugins/theapsgroup/vsphere/tables/vsphere_vm)
+- [Host related queries](https://hub.steampipe.io/plugins/theapsgroup/vsphere/tables/vsphere_host)
+- [Datastore related queries](https://hub.steampipe.io/plugins/theapsgroup/vsphere/tables/vsphere_datastore)
+- [Network related queries](https://hub.steampipe.io/plugins/theapsgroup/vsphere/tables/vsphere_network)
