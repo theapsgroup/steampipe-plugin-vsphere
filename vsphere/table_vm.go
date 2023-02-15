@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/turbot/steampipe-plugin-sdk/v4/plugin/transform"
 
 	"github.com/turbot/steampipe-plugin-sdk/v4/grpc/proto"
 	"github.com/turbot/steampipe-plugin-sdk/v4/plugin"
@@ -29,6 +30,7 @@ type VM struct {
 	HostMoref        string
 	StorageConsumed  string
 	Devices          string
+	UUID             string
 }
 
 func tableVm() *plugin.Table {
@@ -56,6 +58,7 @@ func tableVm() *plugin.Table {
 			{Name: "host_moref", Type: proto.ColumnType_STRING, Description: "The host that is responsible for running a virtual machine."},
 			{Name: "storage_consumed", Type: proto.ColumnType_JSON, Description: "Consumed Storage Usage"},
 			{Name: "devices", Type: proto.ColumnType_JSON, Description: "Virtual Machine hardware devices"},
+			{Name: "uuid", Type: proto.ColumnType_STRING, Description: "The UUID of the virtual machine", Transform: transform.FromField("UUID")},
 		},
 	}
 }
@@ -101,6 +104,7 @@ func listVms(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (i
 			HostMoref:        vm.Runtime.Host.Value,
 			StorageConsumed:  string(jsonBytes),
 			Devices:          string(jsonDevices),
+			UUID:             vm.Config.Uuid,
 		})
 
 	}
