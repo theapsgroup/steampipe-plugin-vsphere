@@ -1,5 +1,8 @@
 ## v0.2.0 [WIP]
 
+_Enhancements_
+- Added `uuid` column to `vsphere_vm` table. [#19](https://github.com/theapsgroup/steampipe-plugin-vsphere/issues/19)
+
 _Bug fixes_
 - Fixed bug where `VSPHERE_ALLOW_UNVERIFIED_SSL` environment variable wasn't utilised. - Thanks @mattschleder
 
