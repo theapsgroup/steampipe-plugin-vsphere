@@ -22,7 +22,7 @@ func connect(ctx context.Context, d *plugin.QueryData) (*vim25.Client, error) {
 	vsphereServer := os.Getenv("VSPHERE_SERVER")
 	user := os.Getenv("VSPHERE_USER")
 	password := os.Getenv("VSPHERE_PASSWORD")
-	allowUnverifiedSSL := DEFAULT_ALLOW_UNVERFIED_SSL
+	allowUnverifiedSSL := os.Getenv("ALLOW_UNVERIFIED_SSL")
 
 	// Override potential env values with config values
 	if vsphereConfig.AllowUnverifiedSSL != nil {
