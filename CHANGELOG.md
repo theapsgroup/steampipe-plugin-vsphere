@@ -1,3 +1,8 @@
+## v0.2.0 [WIP]
+
+_Bug fixes_
+- Fixed bug where `VSPHERE_ALLOW_UNVERIFIED_SSL` environment variable wasn't utilised. - Thanks @mattschleder
+
 ## v0.1.3 [2022-11-10]
 
 _Enhancements_

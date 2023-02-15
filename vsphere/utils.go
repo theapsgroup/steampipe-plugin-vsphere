@@ -22,7 +22,17 @@ func connect(ctx context.Context, d *plugin.QueryData) (*vim25.Client, error) {
 	vsphereServer := os.Getenv("VSPHERE_SERVER")
 	user := os.Getenv("VSPHERE_USER")
 	password := os.Getenv("VSPHERE_PASSWORD")
-	allowUnverifiedSSL := os.Getenv("ALLOW_UNVERIFIED_SSL")
+	allowUnverifiedSSL := DEFAULT_ALLOW_UNVERFIED_SSL
+
+	v, ok := os.LookupEnv("VSPHERE_ALLOW_UNVERIFIED_SSL")
+	if ok {
+		parsed, err := strconv.ParseBool(v)
+		if err != nil {
+			return nil, fmt.Errorf("failed to parse VSPHERE_ALLOW_UNVERIFIED_SSL environment variable: %s\n%v", v, err)
+		}
+
+		allowUnverifiedSSL = parsed
+	}
 
 	// Override potential env values with config values
 	if vsphereConfig.AllowUnverifiedSSL != nil {
@@ -56,22 +66,11 @@ func connect(ctx context.Context, d *plugin.QueryData) (*vim25.Client, error) {
 		return nil, fmt.Errorf(errorMsg)
 	}
 
-	// Unverified ssl is a bit odd because it is optional
-	// If it's unset in the config, and set in the environment, we want to make sure we parse it and error if we can't, instead of silently defaulting
-	unverifiedSSLEnv := os.Getenv("VSPHERE_ALLOW_UNVERIFIED_SSL")
-	if unverifiedSSLEnv != "" && vsphereConfig.AllowUnverifiedSSL == nil {
-		parsed, err := strconv.ParseBool(unverifiedSSLEnv)
-		if err != nil {
-			return nil, fmt.Errorf("Failed to parse VSPHERE_ALLOW_UNVERIFIED_SSL: Value: %s, Error: %v", unverifiedSSLEnv, err)
-		}
-		allowUnverifiedSSL = parsed
-	}
-
 	client := new(vim25.Client)
 
 	parsedUrl, err := soap.ParseURL(vsphereServer)
 	if err != nil {
-		return nil, fmt.Errorf("Error parsing vsphere url: %v", err)
+		return nil, fmt.Errorf("error parsing vsphere url: %v", err)
 	}
 	parsedUrl.User = url.UserPassword(user, password)
 
@@ -81,7 +80,7 @@ func connect(ctx context.Context, d *plugin.QueryData) (*vim25.Client, error) {
 	}
 	err = session.Login(ctx, client, nil)
 	if err != nil {
-		return nil, fmt.Errorf("Error authenticating with vsphere: %v", err)
+		return nil, fmt.Errorf("error authenticating with vsphere: %v", err)
 	}
 
 	return client, nil

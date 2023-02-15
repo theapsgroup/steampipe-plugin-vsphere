@@ -56,7 +56,7 @@ Environment variables:
 export VSPHERE_SERVER=192.168.122.233
 export VSPHERE_USER=root
 export VSPHERE_PASSWORD='s0Mep@ss'
-export ALLOW_UNVERIFIED_SSL=true
+export VSPHERE_ALLOW_UNVERIFIED_SSL=true
 ```
 
 ### Example queries
