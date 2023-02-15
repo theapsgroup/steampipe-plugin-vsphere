@@ -1,9 +1,16 @@
 ## v0.2.0 [WIP]
 
+_What's new?_
+
+- License Change: MPL 2.0 -> Apache 2.0
+
 _Enhancements_
+
 - Added `uuid` column to `vsphere_vm` table. [#19](https://github.com/theapsgroup/steampipe-plugin-vsphere/issues/19)
+- Updated `steampipe-plugin-sdk` to `v5.1.2` [#22](https://github.com/theapsgroup/steampipe-plugin-vsphere/issues/22)
 
 _Bug fixes_
+
 - Fixed bug where `VSPHERE_ALLOW_UNVERIFIED_SSL` environment variable wasn't utilised. - Thanks @mattschleder
 
 ## v0.1.3 [2022-11-10]
