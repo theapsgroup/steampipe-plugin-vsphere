@@ -3,7 +3,7 @@ module steampipe-plugin-vsphere
 go 1.19
 
 require (
-	github.com/turbot/steampipe-plugin-sdk/v5 v5.3.0
+	github.com/turbot/steampipe-plugin-sdk/v5 v5.4.1
 	github.com/vmware/govmomi v0.27.2
 )
 
