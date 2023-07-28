@@ -1,42 +1,94 @@
+![image](https://hub.steampipe.io/images/plugins/theapsgroup/vsphere-social-graphic.png)
 # vSphere plugin for Steampipe
 
-[Steampipe](https://steampipe.io) plugin for vsphere.
+Use SQL to query information about your vSphere resources.
 
-## Query vSphere with Steampipe
+- **[Get started →](https://hub.steampipe.io/plugins/theapsgroup/vsphere)**
+- Documentation: [Table definitions & examples](https://hub.steampipe.io/plugins/theapsgroup/vsphere/tables)
+- Community: [Join #steampipe on Slack →](https://turbot.com/community/join)
+- Get involved: [Issues](https://github.com/theapsgroup/steampipe-plugin-vsphere/issues)
 
-```sql
-select * from vsphere_vm;
-```
+## Quick start
 
-## Get Started
-
-### Installation
+Install the plugin with [Steampipe](https://steampipe.io/downloads):
 
 ```shell
 steampipe plugin install theapsgroup/vsphere
 ```
 
-Or if you prefer, you can clone this repository and build/install from source directly.
+[Configure the plugin](https://hub.steampipe.io/plugins/theapsgroup/vsphere#configuration) using the configuration file:
 
 ```shell
-go build -o steampipe-plugin-vsphere.plugin
-
-mv steampipe-plugin-vsphere.plugin ~/.steampipe/plugins/hub.steampipe.io/plugins/theapsgroup/vsphere@latest/steampipe-plugin-vsphere.plugin
+vi ~/.steampipe/vsphere.spc
 ```
 
-Alternatively, you can `make install` which will perform the same steps as above.
-
+Or environment variables:
 
 ```shell
-cp config/vsphere.spc ~/.steampipe/config/vsphere.spc
+export VSPHERE_SERVER=10.20.30.40
+export VSPHERE_USER=bob
+export VSPHERE_PASSWORD=s0m3p@ss
 ```
 
-Configuration is done via the configuration file:
-`vi ~/.steampipe/config/vsphere.spc` 
+Start Steampipe:
 
-## Documentation
+```shell
+steampipe query
+```
 
-Further documentation can be [found here](docs/index.md)
+Run a query:
+
+```sql
+select
+  name,
+  num_cpu,
+  ip_address
+from
+  vsphere_vm;
+```
+
+## Developing
+
+Prerequisites:
+
+* [Steampipe](https://steampipe.io/downloads)
+* [Golang](https://golang.org/doc/install)
+
+Clone:
+
+```sh
+git clone https://github.com/theapsgroup/steampipe-plugin-vsphere.git
+cd steampipe-plugin-vsphere
+```
+
+Build, which automatically installs the new version to your `~/.steampipe/plugins` directory:
+
+```sh
+make
+```
+
+Configure the plugin:
+
+```sh
+cp config/* ~/.steampipe/config
+vi ~/.steampipe/config/vsphere.spc
+```
+
+Try it!
+
+```shell
+steampipe query
+> .inspect vsphere
+```
+
+Further reading:
+
+* [Writing plugins](https://steampipe.io/docs/develop/writing-plugins)
+* [Writing your first table](https://steampipe.io/docs/develop/writing-your-first-table)
+
+## Contributing
+
+All contributions are subject to the [Apache 2.0 open source license](https://github.com/turbot/steampipe-plugin-github/blob/main/LICENSE).
 
 ## Credits
 

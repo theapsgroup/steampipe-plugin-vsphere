@@ -16,9 +16,30 @@ og_image: "images/plugins/theapsgroup/vsphere-social-graphic.png"
 
 [Steampipe](https://steampipe.io/) is an open source CLI for querying cloud APIs using SQL from [Turbot](https://turbot.com/)
 
-## Getting Started
+For example:
+```sql
+select
+  name,
+  num_cpu,
+  ip_address
+from
+  vsphere_vm;
+```
+```
++---------+---------+-------------+
+| name    | num_cpu | ip_address  |
++---------+---------+-------------+
+| host007 | 12      | 10.20.42.42 |
++---------+---------+-------------+
+```
 
-### Installation
+## Documentation
+
+- **[Table definitions & examples →](https://hub.steampipe.io/plugins/theapsgroup/vsphere/tables)**
+
+## Get Started
+
+### Install
 
 Download and install the latest vSphere plugin:
 
@@ -26,42 +47,35 @@ Download and install the latest vSphere plugin:
 steampipe plugin install theapsgroup/vsphere
 ```
 
-### Prerequisites
-
-- vSphere cluster
-- (Readonly) credentials
-
 ### Configuration
 
-Configuration can be done using both a configuration file and environment variables.
-
-Note: Configuration file variables will take precedence over environment variables.
-
-Configuration File:
+Installing the latest vSphere plugin will create a config file (`~/.steampipe/config/vsphere.spc`) with a single connection named `vsphere`:
 
 ```hcl
 connection "vsphere" {
   plugin = "theapsgroup/vsphere"
 
-  vsphere_server  = "192.168.122.233"
-  user  = "root"
-  password  = "s0Mep@ss"
-  allow_unverified_ssl = true
+  # The IP/url of vSphere server - can also be set with VSPHERE_SERVER environment variable
+  # vsphere_server = "192.168.122.233"
+
+  # vSphere username - can also be set with VSPHERE_USER environment variable
+  # user = "administrator@vsphere.local"
+
+  # vsphere password - can also be set with VSPHERE_PASSWORD environment variable
+  # password  = "s0Mep@ss"
+
+  # TLS cert validation - can also be set with VSPHERE_ALLOW_UNVERIFIED_SSL environment variable
+  # allow_unverified_ssl = true
 }
 ```
 
-Environment variables:
+- `vsphere_server` - The ip address or url of your vSphere server, can also be set with VSPHERE_SERVER environment variable.
+- `user` - The username used to authenticate with vSphere, can also be set with VSPHERE_USER environment variable.
+- `password` - The password used to authenticate with vSphere, can also be set with VSPHERE_PASSWORD environment variable.
+- `allow_unverified_ssl` - Indicates if TLS certificate validation is required or not, can also be set with VSPHERE_ALLOW_UNVERIFIED_SSL environment variable.
 
-```
-export VSPHERE_SERVER=192.168.122.233
-export VSPHERE_USER=root
-export VSPHERE_PASSWORD='s0Mep@ss'
-export VSPHERE_ALLOW_UNVERIFIED_SSL=true
-```
 
-### Example queries
+## Get involved
 
-- [Virtual Machine related queries](https://hub.steampipe.io/plugins/theapsgroup/vsphere/tables/vsphere_vm)
-- [Host related queries](https://hub.steampipe.io/plugins/theapsgroup/vsphere/tables/vsphere_host)
-- [Datastore related queries](https://hub.steampipe.io/plugins/theapsgroup/vsphere/tables/vsphere_datastore)
-- [Network related queries](https://hub.steampipe.io/plugins/theapsgroup/vsphere/tables/vsphere_network)
+- Open source: https://github.com/theapsgroup/steampipe-plugin-vsphere
+- Community: [Join #steampipe on Slack →](https://turbot.com/community/join)
