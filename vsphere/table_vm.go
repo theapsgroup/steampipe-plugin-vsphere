@@ -4,10 +4,14 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"net/url"
+
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin/transform"
 
 	"github.com/turbot/steampipe-plugin-sdk/v5/grpc/proto"
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
+	"github.com/vmware/govmomi/vapi/rest"
+	"github.com/vmware/govmomi/vapi/tags"
 	"github.com/vmware/govmomi/view"
 	"github.com/vmware/govmomi/vim25/mo"
 )
@@ -31,6 +35,7 @@ type VM struct {
 	StorageConsumed  string
 	Devices          string
 	UUID             string
+	Tags             map[string]string
 }
 
 func tableVm() *plugin.Table {
@@ -59,6 +64,7 @@ func tableVm() *plugin.Table {
 			{Name: "storage_consumed", Type: proto.ColumnType_JSON, Description: "Consumed Storage Usage"},
 			{Name: "devices", Type: proto.ColumnType_JSON, Description: "Virtual Machine hardware devices"},
 			{Name: "uuid", Type: proto.ColumnType_STRING, Description: "The UUID of the virtual machine", Transform: transform.FromField("UUID")},
+			{Name: "tags", Type: proto.ColumnType_JSON, Description: "Tags associated with the virtual machine"},
 		},
 	}
 }
@@ -77,14 +83,42 @@ func listVms(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (i
 	if err != nil {
 		return nil, fmt.Errorf(fmt.Sprintf("Error creating vm view: %v", err))
 	}
+
 	err = vmView.Retrieve(ctx, []string{"VirtualMachine"}, []string{"summary", "runtime", "config", "storage"}, &vms)
 	if err != nil {
 		return nil, fmt.Errorf(fmt.Sprintf("Error listing vm summary: %v", err))
 	}
-	for _, vm := range vms {
 
+	vsphereConfig := GetConfig(d.Connection)
+
+	restClient := rest.NewClient(client)
+	err = restClient.Login(ctx, url.UserPassword(*vsphereConfig.User, *vsphereConfig.Password))
+	if err != nil {
+		plugin.Logger(ctx).Error("vsphere_vm.getTags", "auth_error", err)
+	}
+	defer restClient.Logout(ctx)
+
+	tagManager := tags.NewManager(restClient)
+
+	for _, vm := range vms {
 		jsonBytes, _ := json.Marshal(vm.Storage.PerDatastoreUsage)
 		jsonDevices, _ := json.Marshal(vm.Config.Hardware.Device)
+
+		attachedTags, err := tagManager.GetAttachedTags(ctx, vm.Reference())
+		if err != nil {
+			return nil, err
+		}
+
+		tagMap := make(map[string]string)
+		for _, tag := range attachedTags {
+			category, err := tagManager.GetCategory(ctx, tag.CategoryID)
+			if err != nil {
+				plugin.Logger(ctx).Warn("vsphere_vm.get_tags", "category_error", err)
+				continue
+			}
+
+			tagMap[category.Name] = tag.Name
+		}
 
 		d.StreamListItem(ctx, VM{
 			ID:               vm.Summary.Config.GuestId,
@@ -105,8 +139,9 @@ func listVms(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (i
 			StorageConsumed:  string(jsonBytes),
 			Devices:          string(jsonDevices),
 			UUID:             vm.Config.Uuid,
+			Tags:             tagMap,
 		})
-
 	}
+
 	return nil, nil
 }
