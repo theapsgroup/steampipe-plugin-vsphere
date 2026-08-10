@@ -106,7 +106,8 @@ func listVms(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (i
 
 		attachedTags, err := tagManager.GetAttachedTags(ctx, vm.Reference())
 		if err != nil {
-			return nil, err
+			plugin.Logger(ctx).Warn("vsphere_vm.get_tags", "attached_tags_error", err)
+			attachedTags = nil
 		}
 
 		tagMap := make(map[string]string)
